@@ -1,0 +1,12 @@
+{
+  "name": "BreakingBad",
+  "displayName": "BreakingBad",
+  "expo": {
+    "name": "BreakingBad",
+    "slug": "BreakingBad",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
