@@ -8,7 +8,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "expo": "~38.0.1",
+    "expo-linear-gradient": "~8.2.1",
     "expo-splash-screen": "~0.4.0",
     "expo-status-bar": "^1.0.0",
     "expo-updates": "~0.2.10",
@@ -16,6 +18,7 @@
     "react-dom": "~16.11.0",
     "react-native": "~0.62.2",
     "react-native-gesture-handler": "~1.6.1",
+    "react-native-modal": "^11.5.6",
     "react-native-reanimated": "~1.9.0",
     "react-native-screens": "~2.9.0",
     "react-native-unimodules": "~0.10.1",
