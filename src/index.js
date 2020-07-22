@@ -7,11 +7,11 @@ import {
   FlatList,
   SafeAreaView,
   Image,
-  Button,
   TouchableHighlight,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Modal from "react-native-modal";
+import { Searchbar } from "react-native-paper";
 
 import api from "./services/api";
 
@@ -20,15 +20,17 @@ export default function App() {
   const [itemId, setItemId] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const [searchQuery, setSearchQuery] = React.useState("");
+
   useEffect(() => {
     const fetchItems = async () => {
-      const response = await api.get(`/characters`);
+      const response = await api.get(`/characters?name=${searchQuery}`);
 
       setItems(response.data);
     };
 
     fetchItems();
-  }, []);
+  }, [searchQuery]);
 
   const toggleModal = (id) => {
     setModalVisible(!isModalVisible);
@@ -37,6 +39,8 @@ export default function App() {
       setItemId(response.data);
     });
   };
+
+  const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
     <>
@@ -54,6 +58,12 @@ export default function App() {
             height: "100%",
           }}
         />
+        <Searchbar
+          placeholder="Search Characters"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          style={styles.input}
+        />
 
         <FlatList
           data={items}
@@ -62,7 +72,10 @@ export default function App() {
           renderItem={({ item: item }) => (
             <>
               <View style={styles.itemContainer}>
-                <TouchableHighlight onPress={() => toggleModal(item.char_id)}>
+                <TouchableHighlight
+                  underlayColor
+                  onPress={() => toggleModal(item.char_id)}
+                >
                   <Image style={styles.logo} source={{ uri: item.img }} />
                 </TouchableHighlight>
               </View>
@@ -72,22 +85,21 @@ export default function App() {
 
         <Modal
           isVisible={isModalVisible}
-          // backdropColor="#B4B3DB"
+          avoidKeyboard
+          statusBarTranslucent
           backdropOpacity={0.8}
           animationIn="zoomInDown"
           animationOut="zoomOutUp"
-          animationInTiming={600}
-          animationOutTiming={600}
-          backdropTransitionInTiming={600}
-          backdropTransitionOutTiming={600}
+          animationInTiming={2000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={2000}
+          backdropTransitionOutTiming={1000}
           onBackdropPress={() => setModalVisible(false)}
         >
           <View style={styles.content}>
             {itemId.map((item) => (
-              <>
-                <Text key={item.char_id} style={styles.title}>
-                  {item.name}
-                </Text>
+              <View key={item.char_id}>
+                <Text style={styles.title}>{item.name}</Text>
 
                 <Text style={styles.contentTitle}>
                   <Text style={styles.titleText}>Actor Name: </Text>
@@ -109,7 +121,7 @@ export default function App() {
                   <Text style={styles.titleText}>Status: </Text>
                   {item.status}
                 </Text>
-              </>
+              </View>
             ))}
           </View>
         </Modal>
@@ -124,7 +136,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   itemContainer: {
-    marginTop: 40,
+    marginTop: 5,
   },
   logo: {
     width: 180,
@@ -158,5 +170,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#fff",
     textAlign: "center",
+  },
+  input: {
+    height: 50,
+    borderColor: "white",
+    borderWidth: 1,
+    marginTop: 50,
+    borderRadius: 5,
+    width: "80%",
+    backgroundColor: "white",
+    marginBottom: 10,
   },
 });
