@@ -2,16 +2,15 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
-  Text,
   View,
   FlatList,
   SafeAreaView,
   Image,
-  TouchableHighlight,
+  Modal,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Modal from "react-native-modal";
-import { Searchbar } from "react-native-paper";
+// import Modal from "react-native-modal";
+import { SearchBar, Tooltip, Text } from "react-native-elements";
 
 import api from "./services/api";
 
@@ -32,13 +31,13 @@ export default function App() {
     fetchItems();
   }, [searchQuery]);
 
-  const toggleModal = (id) => {
-    setModalVisible(!isModalVisible);
+  // const toggleModal = (id) => {
+  //   setModalVisible(!isModalVisible);
 
-    api.get(`/characters/${id}`).then((response) => {
-      setItemId(response.data);
-    });
-  };
+  //   api.get(`/characters/${id}`).then((response) => {
+  //     setItemId(response.data);
+  //   });
+  // };
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -58,11 +57,13 @@ export default function App() {
             height: "100%",
           }}
         />
-        <Searchbar
+        <SearchBar
+          platform={"android"}
           placeholder="Search Characters"
           onChangeText={onChangeSearch}
           value={searchQuery}
-          style={styles.input}
+          containerStyle={styles.input}
+          // showLoading
         />
 
         <FlatList
@@ -72,18 +73,57 @@ export default function App() {
           renderItem={({ item: item }) => (
             <>
               <View style={styles.itemContainer}>
-                <TouchableHighlight
-                  underlayColor
-                  onPress={() => toggleModal(item.char_id)}
+                <Tooltip
+                  height={300}
+                  width={300}
+                  popover={
+                    <>
+                      <StatusBar
+                        style="auto"
+                        backgroundColor={"rgba(250, 250, 250, 0.70)"}
+                      />
+                      <View key={item.char_id}>
+                        <Text style={styles.title}>{item.name}</Text>
+
+                        <Text style={styles.contentTitle}>
+                          <Text style={styles.titleText}>Actor Name: </Text>
+                          {item.portrayed}
+                        </Text>
+
+                        <Text style={styles.contentTitle}>
+                          <Text style={styles.titleText}>Nickname: </Text>
+                          {item.nickname}
+                        </Text>
+
+                        <Text style={styles.contentTitle}>
+                          <Text style={styles.titleText}>Birthday: </Text>
+
+                          {item.birthday}
+                        </Text>
+
+                        <Text style={styles.contentTitle}>
+                          <Text style={styles.titleText}>Status: </Text>
+                          {item.status}
+                        </Text>
+                      </View>
+                    </>
+                  }
                 >
                   <Image style={styles.logo} source={{ uri: item.img }} />
-                </TouchableHighlight>
+                </Tooltip>
+
+                {/* <TouchableHighlight
+                  underlayColor
+                  onPress={() => toggleModal(item.char_id)}
+                > 
+                  <Image style={styles.logo} source={{ uri: item.img }} />
+                </TouchableHighlight>  */}
               </View>
             </>
           )}
         />
 
-        <Modal
+        {/* <Modal
           isVisible={isModalVisible}
           avoidKeyboard
           statusBarTranslucent
@@ -124,7 +164,7 @@ export default function App() {
               </View>
             ))}
           </View>
-        </Modal>
+        </Modal> */}
       </SafeAreaView>
     </>
   );
@@ -144,14 +184,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     margin: 5,
   },
-  content: {
-    // backgroundColor: "white",
-    padding: 22,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 4,
-    borderColor: "rgba(0, 0, 0, 0.1)",
-  },
+  // content: {
+  //   // backgroundColor: "white",
+  //   padding: 22,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   borderRadius: 4,
+  //   borderColor: "rgba(0, 0, 0, 0.1)",
+  // },
   contentTitle: {
     fontSize: 20,
     marginBottom: 12,
@@ -172,13 +212,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    height: 50,
+    // height: 50,
     borderColor: "white",
-    borderWidth: 1,
+    // borderWidth: 1,
     marginTop: 50,
     borderRadius: 5,
-    width: "80%",
-    backgroundColor: "white",
+    width: "90%",
+    // backgroundColor: "white",
     marginBottom: 10,
   },
 });
